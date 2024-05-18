@@ -3,8 +3,12 @@ import random
 import openpyxl
 
 # Leo los datos del Excel
-df = pd.read_excel("coords_provincias.xlsx", sheet_name = "MatrizAdyacencia", header = None, index_col = 0)
-control = pd.read_excel("coords_provincias.xlsx", sheet_name = "Control", index_col = 0)
+def LeerDatos():
+    df = pd.read_excel("coords_provincias.xlsx", sheet_name = "MatrizAdyacencia", header = None, index_col = 0)
+    control = pd.read_excel("coords_provincias.xlsx", sheet_name = "Control", index_col = 0)
+
+    return df, control
+
 
 # Accedo en modo escritura al control de las comunidades
 wb = openpyxl.load_workbook("coords_provincias.xlsx")
@@ -44,20 +48,14 @@ def ElegirDefensor(comAtaque):
 
             # Actualizamos el valor en el excel
             celda = "B" + str(objetivo + 2)
-            print(celda)
             sheet[celda] = equAtaque
-            print("Celda actualizada")
 
             return objetivo
-        
-    print("No he encontrado atacante desde " + comunidades[comAtaque])
 
     # Si no ha encontrado objetivo es que todas sus comunidades colindantes son controladas por el mismo, por lo que hacemos un bucle que use sus territorios para buscar nuevos objetivos
     for objetivo in objetivos:
 
         if objetivo != -1 and objetivo not in nodosProbados:
-
-            print("RECURSION a " + comunidades[objetivo])
 
             ataque = ElegirDefensor(objetivo)
 
@@ -67,12 +65,18 @@ def ElegirDefensor(comAtaque):
 
                 return ataque
 
-    print("HA GANADO EL " + equAtaque)     
-    return -1
-            
 
-ElegirDefensor(ElegirAtacante())
-wb.save("coords_provincias.xlsx")
+    return -1
+
+while True:
+    df, control = LeerDatos()
+
+    accion = ElegirDefensor(ElegirAtacante())
+
+    if accion == -1:
+        break
+
+    wb.save("coords_provincias.xlsx")
             
 
 
