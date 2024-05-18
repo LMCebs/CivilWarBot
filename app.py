@@ -6,6 +6,10 @@ import openpyxl
 df = pd.read_excel("coords_provincias.xlsx", sheet_name = "MatrizAdyacencia", header = None, index_col = 0)
 control = pd.read_excel("coords_provincias.xlsx", sheet_name = "Control", index_col = 0)
 
+# Accedo en modo escritura al control de las comunidades
+wb = openpyxl.load_workbook("coords_provincias.xlsx")
+sheet = wb["Control"]
+
 # Array con todas las comunidades
 comunidades = ["Andalucía", "Aragón", "Asturias", "Islas Baleares", "Islas Canarias", "Cantabria", "Castilla y León", "Castilla-La Mancha", "Cataluña", "Extremadura", "Galicia", "Madrid", "Murcia", "Navarra", "País Vasco", "La Rioja", "Comunidad Valenciana", "Ceuta", "Melilla", "Islas Azores", "Kiev"]
 
@@ -38,6 +42,12 @@ def ElegirDefensor(comAtaque):
 
             print (comunidades[comAtaque] + " ha atacado a " + comunidades[objetivo])
 
+            # Actualizamos el valor en el excel
+            celda = "B" + str(objetivo + 2)
+            print(celda)
+            sheet[celda] = equAtaque
+            print("Celda actualizada")
+
             return objetivo
         
     print("No he encontrado atacante desde " + comunidades[comAtaque])
@@ -51,14 +61,18 @@ def ElegirDefensor(comAtaque):
 
             ataque = ElegirDefensor(objetivo)
 
-            if ataque != 1:
+            if ataque != -1:
 
                 nodosProbados = list()
 
                 return ataque
+
+    print("HA GANADO EL " + equAtaque)     
+    return -1
             
 
 ElegirDefensor(ElegirAtacante())
+wb.save("coords_provincias.xlsx")
             
 
 
