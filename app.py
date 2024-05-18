@@ -20,6 +20,8 @@ def LeerDatos():
     df = pd.read_excel("coords_provincias.xlsx", sheet_name = "MatrizAdyacencia", header = None, index_col = 0)
     control = pd.read_excel("coords_provincias.xlsx", sheet_name = "Control", index_col = 0)
 
+    print(df)
+
     return df, control
 
 # Bucle de reseteo del Excel
@@ -98,10 +100,12 @@ def Ataque(comAtaque):
     # Pasa por la lista de objetivos hasta que encuentre uno para atacar
     for objetivo in objetivos:
 
-        # Si un objetivo no es controlado por el mismo equipo que el atacante, se selecciona como objetivo
-        if objetivo != -1 and control.iloc[objetivo, 0] != equAtaque:
+        equDefensor = control.iloc[objetivo, 0]
 
-            print (comunidades[comAtaque] + " ha atacado a " + comunidades[objetivo])
+        # Si un objetivo no es controlado por el mismo equipo que el atacante, se selecciona como objetivo
+        if objetivo != -1 and equDefensor != equAtaque:
+
+            print (equAtaque + " ha atacado desde su base en " + comunidades[comAtaque] + " a la base de " + equDefensor + " en " + comunidades[objetivo])
 
             # Actualizamos el valor en el excel
             CambioCelda(objetivo, equAtaque)
@@ -124,27 +128,15 @@ def Ataque(comAtaque):
 
     return -1
 
-Reset()
+df, control = LeerDatos()
 
-cont = 0
+accion = Ataque(ElegirAtacante())
 
-while True:
+if accion == -1:
 
-    df, control = LeerDatos()
+    print ("Ha ganado el " + control.iloc[0,0])
 
-    accion = Ataque(ElegirAtacante())
-
-    cont+=1
-
-    if accion == -1:
-
-        print ("Ha ganado el " + control.iloc[0,0])
-
-        break
-
-    wb.save("coords_provincias.xlsx")
-
-print(cont)
+wb.save("coords_provincias.xlsx")
             
 
 
