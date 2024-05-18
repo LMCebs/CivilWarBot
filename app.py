@@ -50,6 +50,8 @@ def ElegirDefensor(comAtaque):
             celda = "B" + str(objetivo + 2)
             sheet[celda] = equAtaque
 
+            nodosProbados = list()
+
             return objetivo
 
     # Si no ha encontrado objetivo es que todas sus comunidades colindantes son controladas por el mismo, por lo que hacemos un bucle que use sus territorios para buscar nuevos objetivos
@@ -60,8 +62,6 @@ def ElegirDefensor(comAtaque):
             ataque = ElegirDefensor(objetivo)
 
             if ataque != -1:
-
-                nodosProbados = list()
 
                 return ataque
 
