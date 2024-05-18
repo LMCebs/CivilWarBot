@@ -20,7 +20,7 @@ def LeerDatos():
     df = pd.read_excel("coords_provincias.xlsx", sheet_name = "MatrizAdyacencia", header = None, index_col = 0)
     control = pd.read_excel("coords_provincias.xlsx", sheet_name = "Control", index_col = 0)
 
-    print(df)
+    print(control)
 
     return df, control
 
@@ -55,8 +55,22 @@ def Reset():
     wb.save("coords_provincias.xlsx")
 
 # Elige una comunidad aleatoria que atacará
-def ElegirAtacante():
-    return random.randint(0, 20)
+def Day():
+    ComunidadSeleccionada = random.randint(0,20)
+
+    if random.randint(1,12) == 1 and ComunidadSeleccionada != control.iloc[ComunidadSeleccionada, 5]:
+
+        # En una probabilidad entre 12, la provincia atacante se rebelará y volverá a su control inicial
+        celda = "B" + str(ComunidadSeleccionada + 2)
+        sheet[celda] = control.iloc[ComunidadSeleccionada, 5]
+
+        print("Tras una rebelión en " + comunidades[ComunidadSeleccionada] + ", la comunidad ha vuelto al control del " + control.iloc[ComunidadSeleccionada, 5])
+
+    else:
+        accion = Ataque(ComunidadSeleccionada)
+
+        if accion == -1:
+            print ("Ha ganado el " + control.iloc[0,0])
 
 # Elige provxAtaque - 1 comunidades colindantes al ataque y las conquista también 
 def CambioCelda(comDefensa, equAtaque):
@@ -130,13 +144,7 @@ def Ataque(comAtaque):
 
 df, control = LeerDatos()
 
-accion = Ataque(ElegirAtacante())
-
-if accion == -1:
-
-    print ("Ha ganado el " + control.iloc[0,0])
-
-wb.save("coords_provincias.xlsx")
+Day()
             
 
 
